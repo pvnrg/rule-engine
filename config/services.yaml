@@ -1,0 +1,41 @@
+parameters:
+    uploads_directory: '%env(resolve:UPLOADS_DIRECTORY)%'
+    debricked_config:
+        username: '%env(DEBRICKED_USERNAME)%'
+        password: '%env(DEBRICKED_PASSWORD)%'
+        version: '%env(DEBRICKED_VERSION)%'
+
+services:
+    _defaults:
+        autowire: true      # Automatically injects dependencies in your services.
+        autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
+
+    _instanceof: # all class implementing this interface will have service tag
+        App\Service\Notifier\NotifierInterface:
+            tags: [ 'engine.notifier' ]
+    App\:
+        resource: '../src/'
+        exclude:
+            - '../src/DependencyInjection/'
+            - '../src/Entity/'
+            - '../src/Kernel.php'
+
+    App\Service\Contract\FileValidatorInterface: '@App\Service\FileValidator'
+    App\Service\Contract\UploaderInterface: '@App\Service\Uploader'
+    App\Service\Notifier\NotificationInterface: '@App\Service\Notifier\NotificationSender'
+
+    App\Service\Uploader:
+        arguments:
+            $uploadDir: '%uploads_directory%'
+
+    App\Service\Debricked\DebrickedApiManager:
+        arguments:
+            $config: '%debricked_config%'
+
+    App\Service\Debricked\FileUploader:
+        arguments:
+            $uploadRoot: '%uploads_directory%'
+
+    App\Service\Notifier\NotificationSender:
+        arguments:
+            - !tagged_iterator engine.notifier
