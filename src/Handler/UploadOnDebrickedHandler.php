@@ -37,6 +37,7 @@ class UploadOnDebrickedHandler implements MessageHandlerInterface
     {
         $user = $this->userRepository->find($message->userId);
 
+        // fetch list of files which are not uploaded to debricked yet
         $uploads = $this->uploadsRepository->fetchToUpload($user);
 
         if (empty($uploads)) {

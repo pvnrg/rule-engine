@@ -27,7 +27,6 @@ class UploadController extends AbstractController
         }
 
         try {
-            $asyncBus->dispatch(new ScanOnDebricked($security->getUser()->getId()));
             $result = $uploader->upload($files);
 
             // files uploaded, now save in database

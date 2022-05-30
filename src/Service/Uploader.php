@@ -80,6 +80,11 @@ class Uploader implements UploaderInterface
             );
         } catch (\Exception $exception) {
             // log or trigger notification
+            return new UploadStatus(
+                fileOriginalName: $this->getFileOriginalName($file),
+                status: UploadStatus::STATUS_FAILED,
+                error: $exception->getMessage() // todo: put a better message here for end user and add this error to log
+            );
         }
         return new UploadStatus(
             fileOriginalName: $this->getFileOriginalName($file),

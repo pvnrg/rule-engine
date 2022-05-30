@@ -12,11 +12,13 @@ class UploadStatus implements \JsonSerializable
      * @param string $fileOriginalName
      * @param string $status
      * @param string|null $fileUploadName
+     * @param string|null $error
      */
     public function __construct(
         public readonly string $fileOriginalName,
         public readonly string $status,
-        public readonly ?string $fileUploadName = null
+        public readonly ?string $fileUploadName = null,
+        public readonly ?string $error = null
     ) {
         if ($this->status === self::STATUS_SUCCESS && null === $this->fileUploadName) {
             throw new \InvalidArgumentException('Something is wrong here. Status and upload name does not match.');
@@ -30,7 +32,8 @@ class UploadStatus implements \JsonSerializable
     {
         return [
             'file' => $this->fileOriginalName,
-            'status' => $this->status
+            'status' => $this->status,
+            'error' => null !== $this->error ?: ''
         ];
     }
 }

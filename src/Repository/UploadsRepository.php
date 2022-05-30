@@ -46,6 +46,9 @@ class UploadsRepository extends ServiceEntityRepository
     {
         /** @var UploadStatus $upload */
         foreach($uploads as $upload) {
+            if ($upload->status === UploadStatus::STATUS_FAILED) {
+                continue;
+            }
             $uploadObj = (new Uploads())
                 ->setUser($user)
                 ->setFilename($upload->fileUploadName)

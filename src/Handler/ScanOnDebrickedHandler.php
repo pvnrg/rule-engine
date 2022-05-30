@@ -26,6 +26,7 @@ class ScanOnDebrickedHandler implements MessageHandlerInterface
     {
         $user = $this->userRepository->find($message->userId);
 
+        // fetch list of files which are not scanned yet
         $uploads = $this->uploadsRepository->fetchToScan($user);
 
         if (empty($uploads)) {
