@@ -32,13 +32,16 @@ class TriggerController extends AbstractController
             $input = json_decode($request->getContent(), true);
 
             try {
+                if (JSON_ERROR_NONE !== json_last_error()) {
+                    throw new \InvalidArgumentException('Invalid JSON input.');
+                }
                 $this->commandBus->dispatch(new SaveTriggers(
                     $this->security->getUser()->getId(),
                     $input
                 ));
-            } catch (\Exception $e) {
+            } catch (\InvalidArgumentException|\Exception $e) {
                 return $this->json([
-                    'error' => 'Failed to save triggers. Please try again.'
+                    'error' => ($e instanceof \InvalidArgumentException) ? 'Invalid JSON input.': 'Failed to save triggers. Please try again.'
                 ]);
             }
         }
